@@ -33,7 +33,7 @@ function shopImageUrl(shopId) {
 
 // ใช้รูปสินค้าจริงถ้ามี (field "image" ใน products.json) ไม่มีก็ fallback เป็นการ์ดแบรนด์ของร้าน
 function productImageUrl(shop, product) {
-  if (product.image) return `${BASE_URL}/images/products/${product.image}`;
+  if (product.image) return `${BASE_URL}/images/${product.image}`;
   return shopImageUrl(shop.id);
 }
 
