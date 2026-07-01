@@ -8,8 +8,8 @@ const fs = require('fs');
 const path = require('path');
 
 const config = {
-  channelAccessToken: 'WoK3+2ucrOTNVYf8muyoA2UN9q8FJ8+oDPlZ84R/tyUJGP8JlHTxnO6RO4IdEyBIhfTqVD+sRTCsdaYf7dmrwK+7WGHmP2UJD8wMZMnah2pBUT0JQoY2Gy2Fle3W3Npy/R0OyrwBLrwBvyHLfmYpJQdB04t89/1O/w1cDnyilFU=',
-  channelSecret: '7dc1cc53f8a402edaa2095f5c82b729d',
+  channelAccessToken: 'YOUR_CHANNEL_ACCESS_TOKEN',
+  channelSecret: 'YOUR_CHANNEL_SECRET',
 };
 
 // **สำคัญ**: เปลี่ยนเป็นโดเมน Railway จริงของคุณ (ไม่ต้องมี / ปิดท้าย)
@@ -27,6 +27,12 @@ const productData = JSON.parse(fs.readFileSync('./products.json', 'utf8'));
 
 function shopImageUrl(shopId) {
   return `${BASE_URL}/images/shop-${shopId}.png`;
+}
+
+// ใช้รูปสินค้าจริงถ้ามี (field "image" ใน products.json) ไม่มีก็ fallback เป็นการ์ดแบรนด์ของร้าน
+function productImageUrl(shop, product) {
+  if (product.image) return `${BASE_URL}/images/products/${product.image}`;
+  return shopImageUrl(shop.id);
 }
 
 // ---------- Flex Message: การ์ดรายชื่อร้านทั้งหมด (Carousel) ----------
@@ -75,9 +81,9 @@ function buildProductCarousel(shopId) {
     type: 'bubble',
     hero: {
       type: 'image',
-      url: shopImageUrl(shop.id),
+      url: productImageUrl(shop, p),
       size: 'full',
-      aspectRatio: '3:2',
+      aspectRatio: p.image ? '1:1' : '3:2',
       aspectMode: 'cover',
     },
     body: {
@@ -139,9 +145,9 @@ function buildSearchResultFlex(keyword, results) {
     type: 'bubble',
     hero: {
       type: 'image',
-      url: shopImageUrl(r.shop.id),
+      url: productImageUrl(r.shop, r.product),
       size: 'full',
-      aspectRatio: '3:2',
+      aspectRatio: r.product.image ? '1:1' : '3:2',
       aspectMode: 'cover',
     },
     body: {
