@@ -8,7 +8,7 @@ const line = require('@line/bot-sdk');
 const fs = require('fs');
 
 const config = {
-  channelAccessToken: WoK3+2ucrOTNVYf8muyoA2UN9q8FJ8+oDPlZ84R/tyUJGP8JlHTxnO6RO4IdEyBIhfTqVD+sRTCsdaYf7dmrwK+7WGHmP2UJD8wMZMnah2pBUT0JQoY2Gy2Fle3W3Npy/R0OyrwBLrwBvyHLfmYpJQdB04t89/1O/w1cDnyilFU=',
+  channelAccessToken: 'WoK3+2ucrOTNVYf8muyoA2UN9q8FJ8+oDPlZ84R/tyUJGP8JlHTxnO6RO4IdEyBIhfTqVD+sRTCsdaYf7dmrwK+7WGHmP2UJD8wMZMnah2pBUT0JQoY2Gy2Fle3W3Npy/R0OyrwBLrwBvyHLfmYpJQdB04t89/1O/w1cDnyilFU=',
   channelSecret: '7dc1cc53f8a402edaa2095f5c82b729d',
 };
 
