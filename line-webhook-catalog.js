@@ -26,7 +26,7 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 const productData = JSON.parse(fs.readFileSync('./products.json', 'utf8'));
 
 function shopImageUrl(shopId) {
-  return `${BASE_URL}/images/shop-${shopId}.png`;
+  return `${BASE_URL}/images/${product.image}`;
 }
 
 // ใช้รูปสินค้าจริงถ้ามี (field "image" ใน products.json) ไม่มีก็ fallback เป็นการ์ดแบรนด์ของร้าน
