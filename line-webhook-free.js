@@ -73,7 +73,10 @@ async function handleEvent(event) {
 
   const text = event.message.text.trim();
 
-  if (text.includes('สวัสดี') || text.toLowerCase() === 'hello') {
+  const greetings = ['สวัสดี', 'หวัดดี', 'ดีค่ะ', 'ดีคับ', 'ดีครับ', 'ดีจ้า', 'ทัก', 'hi', 'hello'];
+   const isGreeting = greetings.some((g) => text.toLowerCase().includes(g.toLowerCase())) || text === 'ดี';
+
+   if (isGreeting) {
     return reply(
       event,
       'สวัสดีค่ะ ยินดีต้อนรับสู่ร้านค้าสโมสร วปอ. 🙏\n\nพิมพ์ "รายชื่อร้าน" ดูร้านทั้งหมด\nพิมพ์เลขร้าน เช่น "01" ดูสินค้าร้านนั้น\nหรือพิมพ์คำค้น เช่น "เนคไท" "กระเป๋า" "หมวก" "เสื้อโปโล" เพื่อค้นหาสินค้า'
