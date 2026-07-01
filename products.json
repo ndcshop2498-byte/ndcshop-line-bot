@@ -14,7 +14,7 @@
         {
           "name": "กระเป๋าจิงโจ้",
           "price": 450,
-          "image": "prod-01-kangaroo-bag.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-01-kangaroo-bag.jpg"
         },
         {
           "name": "ผ้าขนหนู สีฟ้า",
@@ -23,7 +23,7 @@
         {
           "name": "สติ๊กเกอร์หน้ารถ",
           "price": 90,
-          "image": "prod-01-sticker.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-01-sticker.jpg"
         },
         {
           "name": "กระเป๋าหิ้วลายทาง #6702045",
@@ -40,7 +40,7 @@
         {
           "name": "เสื้อไมโครนาโน",
           "price": 750,
-          "image": "prod-01-micro-nano-shirt.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-01-micro-nano-shirt.jpg"
         }
       ]
     },
@@ -54,22 +54,22 @@
         {
           "name": "ตราปัก วปอ. ใหญ่",
           "price": 70,
-          "image": "prod-02-badge-big.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-02-badge-big.jpg"
         },
         {
           "name": "ตราปัก วปอ. เล็ก",
           "price": 60,
-          "image": "prod-02-badge-small.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-02-badge-small.jpg"
         },
         {
           "name": "เข็มเนคไท (แบบหนีบ)",
           "price": 350,
-          "image": "prod-02-tie-clip.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-02-tie-clip.jpg"
         },
         {
           "name": "เข็มเนคไท (แบบหมุด)",
           "price": 350,
-          "image": "prod-02-tie-pin.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-02-tie-pin.jpg"
         },
         {
           "name": "กระดุมลงยา (ศ.)",
@@ -86,7 +86,7 @@
         {
           "name": "เสื้อแจ็คเก็ต คอกรม-ขาว (Kela)",
           "price": 900,
-          "image": "prod-03-collar-jacket.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-03-collar-jacket.jpg"
         },
         {
           "name": "เสื้อแจ็คเก็ต Kela สีดำ, กรม",
@@ -103,7 +103,7 @@
         {
           "name": "เสื้อโปโล Kela สีกรม",
           "price": 550,
-          "image": "prod-03-polo-navy.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-03-polo-navy.jpg"
         },
         {
           "name": "เสื้อโปโล Kela สีขาว",
@@ -112,27 +112,27 @@
         {
           "name": "เสื้อโปโล Kela สีฟ้า",
           "price": 550,
-          "image": "prod-03-polo-lightblue.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-03-polo-lightblue.jpg"
         },
         {
           "name": "เสื้อโปโล Kela สีกากี",
           "price": 550,
-          "image": "prod-03-polo-khaki.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-03-polo-khaki.jpg"
         },
         {
           "name": "เสื้อโปโล Kela สีเขียวขี้ม้า",
           "price": 550,
-          "image": "prod-03-polo-olive.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-03-polo-olive.jpg"
         },
         {
           "name": "เสื้อโปโล Kela สีดำ (ไม่มีลาย)",
           "price": 550,
-          "image": "prod-03-polo-black.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-03-polo-black.jpg"
         },
         {
           "name": "เสื้อโปโล Kela สีขาว ใหม่ (ไม่มีลาย)",
           "price": 550,
-          "image": "prod-03-polo-white.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-03-polo-white.jpg"
         },
         {
           "name": "เสื้อโปโลสีขาว บอ. กีล่า",
@@ -154,7 +154,7 @@
         {
           "name": "กระเป๋า #182",
           "price": 750,
-          "image": "prod-04-bag-182.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-04-bag-182.jpg"
         },
         {
           "name": "กระเป๋า #188",
@@ -175,7 +175,7 @@
         {
           "name": "เสื้อแจ็คเก็ต Nine (ปรับราคา)",
           "price": 1490,
-          "image": "prod-05-jacket-nine.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-05-jacket-nine.jpg"
         },
         {
           "name": "เสื้อแจ็คเก็ต Nine (3XL 4XL 5XL)",
@@ -217,12 +217,12 @@
         {
           "name": "เข็มรัฏฐาภิรักษ์",
           "price": 1100,
-          "image": "prod-07-rattanapirak-pin.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-07-rattanapirak-pin.jpg"
         },
         {
           "name": "เนคไท วปอ. สีฟ้าเรียบ",
           "price": 700,
-          "image": "prod-07-tie-blue.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-07-tie-blue.jpg"
         },
         {
           "name": "เนคไท วปอ. สีฟ้าลายดอก",
@@ -231,17 +231,17 @@
         {
           "name": "เนคไท วปอ. สีชมพู (มีตรา)",
           "price": 700,
-          "image": "prod-07-tie-pink.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-07-tie-pink.jpg"
         },
         {
           "name": "เนคไท วปอ. สีเหลือง (มีตรา)",
           "price": 700,
-          "image": "prod-07-tie-yellow.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-07-tie-yellow.jpg"
         },
         {
           "name": "เนคไท สีดำ (ไม่มีตรา)",
           "price": 700,
-          "image": "prod-07-tie-black.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-07-tie-black.jpg"
         },
         {
           "name": "เนคไท วปอ. สีดำ",
@@ -278,7 +278,7 @@
         {
           "name": "กระเป๋าเสื้อ #155",
           "price": 1190,
-          "image": "prod-09-garment-bag.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-09-garment-bag.jpg"
         }
       ]
     },
@@ -291,12 +291,12 @@
         {
           "name": "กระเป๋าสาน ตรา วปอ.",
           "price": 790,
-          "image": "prod-10-woven-bag-ndc.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-10-woven-bag-ndc.jpg"
         },
         {
           "name": "กระเป๋าสาน ตรา วปอ.บอ.",
           "price": 790,
-          "image": "prod-10-woven-bag-ndcbo.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-10-woven-bag-ndcbo.jpg"
         }
       ]
     },
@@ -310,12 +310,12 @@
         {
           "name": "หมวกตรา วปอ. (ปักข่อ)",
           "price": 450,
-          "image": "prod-11-cap-embroidered.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-11-cap-embroidered.jpg"
         },
         {
           "name": "หมวกตรา วปอ.",
           "price": 400,
-          "image": "prod-11-cap-plain.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-11-cap-plain.jpg"
         }
       ]
     },
@@ -329,12 +329,12 @@
         {
           "name": "เสื้อโปโล Numsiri (สีฟ้ามิ้น)",
           "price": 490,
-          "image": "prod-12-polo-lightblue.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-12-polo-lightblue.jpg"
         },
         {
           "name": "เสื้อโปโล Numsiri (สีขาว)",
           "price": 490,
-          "image": "prod-12-polo-white.jpg"
+          "image": "https://raw.githubusercontent.com/ndcshop2498-byte/ndcshop-line-bot/main/images/prod-12-polo-white.jpg"
         }
       ]
     }
