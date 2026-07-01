@@ -400,6 +400,21 @@ async function handleEvent(event) {
     return startCheckout(event, userId);
   }
 
+  // ปุ่ม Rich Menu "สั่งซื้อสินค้า" (ไม่ระบุสินค้าเจาะจง) -> เช็คตะกร้าก่อนตัดสินใจว่าจะพาไปเช็คเอาท์หรือให้เลือกสินค้าก่อน
+  if (text === 'สั่งซื้อสินค้า' || text === 'สั่งซื้อ') {
+    const cart = getCart(userId);
+    if (cart.length > 0) {
+      return startCheckout(event, userId);
+    }
+    return client.replyMessage({
+      replyToken: event.replyToken,
+      messages: [
+        { type: 'text', text: 'ยังไม่มีสินค้าในตะกร้าเลยค่ะ 🛒\nเลือกสินค้าที่ต้องการสั่งซื้อได้จากร้านค้าด้านล่างนี้เลยค่ะ' },
+        buildShopCarousel(),
+      ],
+    });
+  }
+
   if (text.includes('ดูตะกร้า') || text === 'ตะกร้า') {
     const cart = getCart(userId);
     if (cart.length === 0) {
