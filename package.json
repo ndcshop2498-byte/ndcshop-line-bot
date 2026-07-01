@@ -2,9 +2,9 @@
   "name": "ndcshop-line-bot",
   "version": "1.0.0",
   "description": "LINE chatbot สำหรับร้านค้าสโมสร วปอ.",
-  "main": "line-webhook.js",
+  "main": "line-webhook-free.js",
   "scripts": {
-    "start": "node line-webhook.js"
+    "start": "node line-webhook-free.js"
   },
   "dependencies": {
     "express": "^4.19.2",
