@@ -8,8 +8,8 @@ const fs = require('fs');
 const path = require('path');
 
 const config = {
-  channelAccessToken: 'WoK3+2ucrOTNVYf8muyoA2UN9q8FJ8+oDPlZ84R/tyUJGP8JlHTxnO6RO4IdEyBIhfTqVD+sRTCsdaYf7dmrwK+7WGHmP2UJD8wMZMnah2pBUT0JQoY2Gy2Fle3W3Npy/R0OyrwBLrwBvyHLfmYpJQdB04t89/1O/w1cDnyilFU=',
-  channelSecret: '7dc1cc53f8a402edaa2095f5c82b729d',
+  channelAccessToken: 'YOUR_CHANNEL_ACCESS_TOKEN',
+  channelSecret: 'YOUR_CHANNEL_SECRET',
 };
 
 // **สำคัญ**: เปลี่ยนเป็นโดเมน Railway จริงของคุณ (ไม่ต้องมี / ปิดท้าย)
@@ -170,8 +170,9 @@ function buildSearchResultFlex(keyword, results) {
   return { type: 'flex', altText: `ผลการค้นหา "${keyword}"`, contents: { type: 'carousel', contents: bubbles } };
 }
 
-// ---------- ระบบสั่งซื้อแบบสนทนา (เก็บสถานะไว้ในหน่วยความจำระหว่างเซิร์ฟเวอร์ทำงาน) ----------
-const sessions = new Map(); // userId -> { step, productName, shopName, shopPhone, name, phone, qty }
+// ---------- ระบบสั่งซื้อแบบตะกร้า (สั่งได้หลายรายการก่อนเช็คเอาท์ครั้งเดียว) ----------
+const sessions = new Map(); // userId -> { step, ... } ขั้นตอนสนทนาปัจจุบัน
+const carts = new Map(); // userId -> [{ productName, shopName, qty }]
 
 function ordersFilePath() {
   return path.join(__dirname, 'orders.json');
@@ -188,6 +189,11 @@ function saveOrder(order) {
   fs.writeFileSync(ordersFilePath(), JSON.stringify(orders, null, 2));
 }
 
+function getCart(userId) {
+  if (!carts.has(userId)) carts.set(userId, []);
+  return carts.get(userId);
+}
+
 function quickReplyQty() {
   return {
     items: [1, 2, 3, 4, 5].map((n) => ({
@@ -197,28 +203,67 @@ function quickReplyQty() {
   };
 }
 
-function quickReplyConfirm() {
+function quickReplyAfterAdd() {
   return {
     items: [
-      { type: 'action', action: { type: 'message', label: '✅ ยืนยันสั่งซื้อ', text: 'ยืนยัน' } },
-      { type: 'action', action: { type: 'message', label: '❌ ยกเลิก', text: 'ยกเลิก' } },
+      { type: 'action', action: { type: 'message', label: '🛍️ เลือกดูสินค้าต่อ', text: 'เลือกดูสินค้า' } },
+      { type: 'action', action: { type: 'message', label: '🧾 เช็คเอาท์', text: 'เช็คเอาท์' } },
     ],
   };
 }
 
-// เริ่มขั้นตอนสั่งซื้อ เมื่อลูกค้ากดปุ่ม "สั่งซื้อสินค้านี้"
-function startOrderSession(userId, productName, shopName, shopPhone) {
-  sessions.set(userId, { step: 'ask_name', productName, shopName, shopPhone });
+function quickReplyConfirm() {
+  return {
+    items: [
+      { type: 'action', action: { type: 'message', label: '✅ ยืนยันสั่งซื้อ', text: 'ยืนยัน' } },
+      { type: 'action', action: { type: 'message', label: '❌ ยกเลิกทั้งหมด', text: 'ยกเลิก' } },
+    ],
+  };
 }
 
-// จัดการข้อความระหว่างอยู่ในขั้นตอนสั่งซื้อ คืนค่า null ถ้าไม่ได้อยู่ในเซสชัน
+function cartSummaryText(cart) {
+  return cart.map((item, i) => `${i + 1}. ${item.productName} x${item.qty} (ร้าน ${item.shopName})`).join('\n');
+}
+
+// เมื่อลูกค้ากดปุ่ม "สั่งซื้อสินค้านี้" -> เริ่มถามจำนวน แล้วค่อยเพิ่มลงตะกร้า
+function startAddToCart(userId, productName, shopName) {
+  sessions.set(userId, { step: 'ask_qty_for_item', productName, shopName });
+}
+
+// จัดการข้อความระหว่างอยู่ในขั้นตอนสนทนา (เพิ่มตะกร้า / เช็คเอาท์) คืนค่า null ถ้าไม่เกี่ยวข้อง
 async function handleOrderStep(event, userId, text) {
   const session = sessions.get(userId);
+
+  if (text === 'ยกเลิก' && session) {
+    sessions.delete(userId);
+    carts.delete(userId);
+    return reply(event, 'ยกเลิกคำสั่งซื้อทั้งหมดแล้วค่ะ 🙏 หากต้องการสั่งใหม่ พิมพ์ "เลือกดูสินค้า" ได้เลย');
+  }
+
   if (!session) return null;
 
-  if (text === 'ยกเลิก') {
+  // ขั้นตอน: ถามจำนวนสินค้าที่เพิ่งกดสั่ง แล้วเพิ่มลงตะกร้า
+  if (session.step === 'ask_qty_for_item') {
+    const qty = parseInt(text, 10);
+    if (!qty || qty < 1) {
+      return client.replyMessage({
+        replyToken: event.replyToken,
+        messages: [{ type: 'text', text: 'ต้องการกี่ชิ้นคะ 🛍️ (เลือกจากปุ่มด้านล่าง หรือพิมพ์ตัวเลข)', quickReply: quickReplyQty() }],
+      });
+    }
+    const cart = getCart(userId);
+    cart.push({ productName: session.productName, shopName: session.shopName, qty });
     sessions.delete(userId);
-    return reply(event, 'ยกเลิกคำสั่งซื้อแล้วค่ะ 🙏 หากต้องการสั่งใหม่ พิมพ์ "รายชื่อร้าน" ได้เลย');
+    return client.replyMessage({
+      replyToken: event.replyToken,
+      messages: [
+        {
+          type: 'text',
+          text: `เพิ่มลงตะกร้าแล้วค่ะ ✅\n${session.productName} x${qty}\n\n🛒 ในตะกร้าตอนนี้มี ${cart.length} รายการ\n\nต้องการเลือกดูสินค้าเพิ่ม หรือไปเช็คเอาท์เลยคะ?`,
+          quickReply: quickReplyAfterAdd(),
+        },
+      ],
+    });
   }
 
   if (session.step === 'ask_name') {
@@ -229,28 +274,14 @@ async function handleOrderStep(event, userId, text) {
 
   if (session.step === 'ask_phone') {
     session.phone = text;
-    session.step = 'ask_qty';
-    return client.replyMessage({
-      replyToken: event.replyToken,
-      messages: [{ type: 'text', text: 'ต้องการกี่ชิ้นคะ 🛍️', quickReply: quickReplyQty() }],
-    });
-  }
-
-  if (session.step === 'ask_qty') {
-    const qty = parseInt(text, 10);
-    if (!qty || qty < 1) {
-      return reply(event, 'รบกวนพิมพ์เป็นตัวเลขจำนวนชิ้นด้วยค่ะ เช่น 1, 2, 3');
-    }
-    session.qty = qty;
     session.step = 'confirm';
+    const cart = getCart(userId);
     const summary =
       `กรุณาตรวจสอบออเดอร์ค่ะ 📋\n\n` +
-      `สินค้า: ${session.productName}\n` +
-      `ร้าน: ${session.shopName}\n` +
-      `จำนวน: ${qty} ชิ้น\n` +
+      `${cartSummaryText(cart)}\n\n` +
       `ชื่อผู้สั่ง: ${session.name}\n` +
       `เบอร์โทร: ${session.phone}\n\n` +
-      `ยืนยันคำสั่งซื้อหรือไม่คะ?`;
+      `ยืนยันคำสั่งซื้อทั้งหมดหรือไม่คะ?`;
     return client.replyMessage({
       replyToken: event.replyToken,
       messages: [{ type: 'text', text: summary, quickReply: quickReplyConfirm() }],
@@ -259,26 +290,36 @@ async function handleOrderStep(event, userId, text) {
 
   if (session.step === 'confirm') {
     if (text === 'ยืนยัน') {
+      const cart = getCart(userId);
       const orderId = 'ND' + Date.now().toString().slice(-8);
       saveOrder({
         orderId,
-        productName: session.productName,
-        shopName: session.shopName,
-        qty: session.qty,
+        items: cart,
         customerName: session.name,
         customerPhone: session.phone,
         createdAt: new Date().toISOString(),
       });
       sessions.delete(userId);
+      carts.delete(userId);
       return reply(
         event,
-        `🎉 ยืนยันคำสั่งซื้อสำเร็จ!\nเลขที่ออเดอร์: ${orderId}\n\nแอดมินจะติดต่อกลับที่เบอร์ที่แจ้งไว้เพื่อนัดชำระเงิน/รับสินค้าค่ะ 🙏\nขอบคุณที่อุดหนุนร้านค้าสโมสร วปอ. นะคะ`
+        `🎉 ยืนยันคำสั่งซื้อสำเร็จ!\nเลขที่ออเดอร์: ${orderId}\nจำนวน ${cart.length} รายการ\n\nแอดมินจะติดต่อกลับที่เบอร์ที่แจ้งไว้เพื่อนัดชำระเงิน/รับสินค้าค่ะ 🙏\nขอบคุณที่อุดหนุนร้านค้าสโมสร วปอ. นะคะ`
       );
     }
-    return reply(event, 'พิมพ์ "ยืนยัน" เพื่อยืนยันคำสั่งซื้อ หรือ "ยกเลิก" เพื่อยกเลิกค่ะ', quickReplyConfirm());
+    return reply(event, 'พิมพ์ "ยืนยัน" เพื่อยืนยันคำสั่งซื้อ หรือ "ยกเลิก" เพื่อยกเลิกทั้งหมดค่ะ', quickReplyConfirm());
   }
 
   return null;
+}
+
+// เริ่มขั้นตอนเช็คเอาท์ (เรียกเมื่อลูกค้าพิมพ์ "เช็คเอาท์")
+function startCheckout(event, userId) {
+  const cart = getCart(userId);
+  if (cart.length === 0) {
+    return reply(event, 'ตะกร้ายังว่างอยู่ค่ะ 🛒 พิมพ์ "เลือกดูสินค้า" เพื่อเลือกสินค้าก่อนนะคะ');
+  }
+  sessions.set(userId, { step: 'ask_name' });
+  return reply(event, `รายการในตะกร้า 🛒\n${cartSummaryText(cart)}\n\n👤 รบกวนขอชื่อผู้สั่งซื้อด้วยค่ะ`);
 }
 
 function reply(event, text, quickReply) {
@@ -316,13 +357,18 @@ async function handleEvent(event) {
       messages: [
         {
           type: 'text',
-          text: 'สวัสดีค่ะ ยินดีต้อนรับสู่ร้านค้าสโมสร วปอ. 🙏\nพิมพ์ "รายชื่อร้าน" เพื่อดูร้านทั้งหมดพร้อมรูปภาพ\nหรือพิมพ์เลขร้าน/คำค้น เช่น "เนคไท" "กระเป๋า" เพื่อดูสินค้า',
+          text: 'สวัสดีค่ะ ยินดีต้อนรับสู่ร้านค้าสโมสร วปอ. 🙏\nพิมพ์ "เลือกดูสินค้า" เพื่อดูร้านค้าทั้งหมดพร้อมรูปภาพ\nหรือพิมพ์เลขร้าน/คำค้น เช่น "เนคไท" "กระเป๋า" เพื่อดูสินค้า',
+          quickReply: {
+            items: [
+              { type: 'action', action: { type: 'message', label: '🛍️ เลือกดูสินค้า', text: 'เลือกดูสินค้า' } },
+            ],
+          },
         },
       ],
     });
   }
 
-  if (text.includes('รายชื่อร้าน')) {
+  if (text.includes('รายชื่อร้าน') || text.includes('เลือกดูสินค้า') || text.includes('ดูสินค้า')) {
     return client.replyMessage({ replyToken: event.replyToken, messages: [buildShopCarousel()] });
   }
 
@@ -333,13 +379,30 @@ async function handleEvent(event) {
     if (flex) return client.replyMessage({ replyToken: event.replyToken, messages: [flex] });
   }
 
-  // ปุ่ม "สั่งซื้อสินค้านี้" ส่งข้อความรูปแบบ "สั่งซื้อ: ชื่อสินค้า (ร้าน ชื่อร้าน)" -> เริ่มขั้นตอนสั่งซื้อ
+  // ปุ่ม "สั่งซื้อสินค้านี้" ส่งข้อความรูปแบบ "สั่งซื้อ: ชื่อสินค้า (ร้าน ชื่อร้าน)" -> ถามจำนวนแล้วเพิ่มลงตะกร้า
   const orderMatch = text.match(/^สั่งซื้อ:\s*(.+?)\s*\(ร้าน\s*(.+?)\)$/);
   if (orderMatch) {
     const [, productName, shopName] = orderMatch;
-    const shop = productData.shops.find((s) => s.name === shopName);
-    startOrderSession(userId, productName, shopName, shop?.phone || '');
-    return reply(event, `รับทราบค่ะ ต้องการสั่งซื้อ "${productName}"\n\n👤 รบกวนขอชื่อผู้สั่งซื้อด้วยค่ะ`);
+    startAddToCart(userId, productName, shopName);
+    return client.replyMessage({
+      replyToken: event.replyToken,
+      messages: [{ type: 'text', text: `รับทราบค่ะ ต้องการสั่งซื้อ "${productName}"\nต้องการกี่ชิ้นคะ 🛍️`, quickReply: quickReplyQty() }],
+    });
+  }
+
+  if (text.includes('เช็คเอาท์') || text.includes('checkout') || text === 'สั่งซื้อทั้งหมด') {
+    return startCheckout(event, userId);
+  }
+
+  if (text.includes('ดูตะกร้า') || text === 'ตะกร้า') {
+    const cart = getCart(userId);
+    if (cart.length === 0) {
+      return reply(event, 'ตะกร้ายังว่างอยู่ค่ะ 🛒 พิมพ์ "เลือกดูสินค้า" เพื่อเลือกสินค้าก่อนนะคะ');
+    }
+    return client.replyMessage({
+      replyToken: event.replyToken,
+      messages: [{ type: 'text', text: `🛒 รายการในตะกร้า\n${cartSummaryText(cart)}`, quickReply: quickReplyAfterAdd() }],
+    });
   }
 
   if (text.includes('ติดต่อ') || text.includes('แอดมิน')) {
