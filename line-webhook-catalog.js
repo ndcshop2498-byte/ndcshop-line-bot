@@ -23,7 +23,9 @@ const client = new line.messagingApi.MessagingApiClient({
 // เปิดให้เข้าถึงรูปภาพผ่าน URL เช่น BASE_URL/images/shop-01.png
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
-const productData = JSON.parse(fs.readFileSync('./products.json', 'utf8'));
+const productData = JSON.parse(
+  fs.readFileSync(path.join(__dirname, 'products.json'), 'utf8')
+);
 
 function shopImageUrl(shopId) {
   return `${BASE_URL}/images/${product.image}`;
