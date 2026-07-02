@@ -433,58 +433,19 @@ async function handleEvent(event) {
     });
   }
 
-  // ================= รองรับข้อความสนทนา =================
-const searchPatterns = [
-  /^สนใจ\s*(.+)$/i,
-  /^สนใจสินค้า\s*(.+)$/i,
-  /^อยากได้\s*(.+)$/i,
-  /^ต้องการ\s*(.+)$/i,
-  /^ขอซื้อ\s*(.+)$/i,
-  /^หา\s*(.+)$/i,
-  /^ดู\s*(.+)$/i,
-  /^มี\s*(.+?)\s*ไหม$/i,
-  /^ราคา\s*(.+)$/i,
-];
-
-let keyword = null;
-
-for (const pattern of searchPatterns) {
-  const match = text.match(pattern);
-  if (match) {
-    keyword = match[1].trim();
-    break;
+  const results = searchProducts(text);
+  const flex = buildSearchResultFlex(text, results);
+  if (flex) {
+    return client.replyMessage({ replyToken: event.replyToken, messages: [flex] });
   }
-}
-
-// รองรับ "สนใจเนคไท" แบบไม่เว้นวรรค
-if (!keyword) {
-  const prefixes = ["สนใจ","อยากได้","ต้องการ","ขอซื้อ","หา","ดู","ราคา"];
-  for (const p of prefixes) {
-    if (text.startsWith(p)) {
-      keyword = text.substring(p.length).trim();
-      break;
-    }
-  }
-}
-
-const results = searchProducts(keyword || text);
-const flex = buildSearchResultFlex(keyword || text, results);
-
-if (flex) {
   return client.replyMessage({
     replyToken: event.replyToken,
-    messages: [flex],
-  });
-  return client.replyMessage({
-    replyToken: event.replyToken,
-    messages: [
-      {
-        type: 'text',
-        text: `ไม่พบสินค้าที่ตรงกับ "${text}" ค่ะ\nลองพิมพ์ "รายชื่อร้าน" หรือคำอื่น เช่น "เนคไท" "กระเป๋า" "หมวก"`,
-      },
-    ],
+    messages: [{ type: 'text', text: `ไม่พบสินค้าที่ตรงกับ "${text}" ค่ะ\nลองพิมพ์ "รายชื่อร้าน" หรือคำอื่น เช่น "เนคไท" "กระเป๋า" "หมวก"` }],
   });
 }
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 // วิธีติดตั้ง:
 // npm install express @line/bot-sdk
