@@ -477,9 +477,7 @@ if (flex) {
   });
 }
     replyToken: event.replyToken,
-    messages: [{ type: 'text', text: `ไม่พบสินค้าที่ตรงกับ "${text}" ค่ะ\nลองพิมพ์ "รายชื่อร้าน" หรือคำอื่น เช่น "เนคไท" "กระเป๋า" "หมวก"` }],
-  });
-}
+messages: [{ type: 'text', text: `ไม่พบสินค้าที่ตรงกับ "${text}" ค่ะ\nลองพิมพ์ "รายชื่อร้าน" หรือคำอื่น เช่น "เนคไท" "กระเป๋า" "หมวก"` }],}
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
